@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coders Talking</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+        }
+
+        h1, h3, p, ul, li {
+            color: #00ff00;
+            margin: 0;
+        }
+
+        ul {
+            display: flex;
+            justify-content: left;
+            gap: 20px;
+            padding: 0;
+            list-style: none;
+            margin: 15px 0 20px 0;
+        }
+
+        ul li a {
+            color: #00ff00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        ul li a:hover {
+            color: #00cc00;
+            text-decoration: underline;
+        }
+
+        section {
+            background-color: #111111;
+            border: 1px solid #00ff00;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 30px;
+            max-width: 1000px;
+        }
+
+        section h3 {
+            margin-bottom: 10px;
+            color: #00ff00;
+        }
+
+        textarea.mensaje-input {
+            width: 100%;
+            height: 100%;
+            resize: vertical;
+            padding: 8px;
+            background-color: #000000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 8px;
+            padding: 8px 16px;
+            background-color: #006600;
+            border: none;
+            border-radius: 4px;
+            color: #00ff00;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #009900;
+        }
+
+        .chat-container {
+            margin-top: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+            background-color: #000000;
+            border: 1px solid #00ff00;
+            padding: 10px;
+            border-radius: 4px;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+        }
+
+        .chat-container div {
+            margin-bottom: 6px;
+            padding: 6px 6px;
+            background-color: #003300;
+            border-radius: 5px;
+            color: #00ff00;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+
+        #consent-modal, #privacy-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        #consent-modal p, #privacy-modal p {
+            max-width: 600px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        #consent-modal a, #privacy-modal a {
+            color: #00cc00;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #consent-modal button, #privacy-modal button {
+            margin: 0 10px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        #accept-btn {
+            background-color: #28a745;
+            color: #000000;
+        }
+
+        #reject-btn {
+            background-color: #dc3545;
+            color: #000000;
+        }
+
+        #privacy-content {
+            background: #001100;
+            border: 2px solid #0f0;
+            padding: 2rem;
+            max-width: 600px;
+            color: #0f0;
+            font-size: 1rem;
+            border-radius: 8px;
+            text-align: left;
+        }
+        #privacy-content h2 {
+            margin-top: 0;
+            color: #0f0;
+            text-align: center;
+        }
+        #privacy-buttons {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        #privacy-buttons button {
+            margin: 0 1rem;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #0a0;
+            border-top: 1px solid #0f0;
+            padding: 1rem 0 2rem 0;
+            background: transparent;
+        }
+
+        .titulo{
+            text-align: center;
+        }
+        </style>
+</head>
+<body>
+
+    <!-- Modal de consentimiento -->
+    <div id="consent-modal">
+        <p>
+            Antes de continuar, debes aceptar nuestra 
+            <a id="show-privacy-link">Política de Privacidad</a>.
+        </p>
+        <div>
+            <button id="accept-btn">Aceptar</button>
+            <button id="reject-btn">Rechazar</button>
+        </div>
+    </div>
+
+    <!-- Modal de política de privacidad -->
+    <div id="privacy-modal" style="display:none;">
+        <div id="privacy-content">
+            <h2>Política de Privacidad y Términos y Condiciones</h2>
+            <p>
+                Al utilizar este foro, aceptas que todos los datos que introduzcas, incluyendo mensajes, nombres de usuario y cualquier otra información, serán de mi propiedad absoluta.<br><br>
+                Tus mensajes y datos podrán ser almacenados y usados conforme a esta política.<br><br>
+                <strong>Todos los datos introducidos por el usuario serán propiedad exclusiva del titular de este sitio.</strong><br><br>
+                Si no aceptas estos términos y condiciones, no podrás utilizar este foro.<br><br>
+                <strong>Copyright:</strong><br>
+                Este código y todo su contenido es propiedad absoluta de Darío Aitor Ciucu Ivana. Queda totalmente prohibido su uso, copia, modificación, distribución y comercialización sin mi consentimiento expreso y por escrito. Todos los derechos reservados.<br>
+            </p>
+            <div id="privacy-buttons">
+                <button id="close-privacy-btn">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" style="display:none;">
+        <h1 class="titulo">Bienvenidos al foro de código libre</h1>
+        <p class="titulo">(Nuestro lema es: codifica lo que quieras.)</p>
+
+        <ol class="ordered-list">
+            <li><a href="#PYTHON">Python</a></li>
+            <li><a href="#HTML5">HTML5</a></li>
+            <li><a href="#CSS3">CSS3</a></li>
+            <li><a href="#JAVASCRIPT">JavaScript</a></li>
+        </ol>
+
+        <section id="PYTHON" class="seccion">
+            <h3>PYTHON</h3>
+            <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
+            <button onclick="enviarMensaje(this)">Enviar</button>
+            <button onclick="borrarMensajes(this)">🗑️ Borrar mensajes</button>
+            <div class="chat-container"></div>
+            <br>
+
+        </section>
+
+<ol class="ordered-list">
+  <li><a href="https://www.youtube.com/watch?v=Kp4Mvapo5kc" target="_blank" rel="noopener noreferrer">Curso COMPLETO de Python desde CERO para PRINCIPIANTES</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=TkN2i-_4N4g" target="_blank" rel="noopener noreferrer">Curso COMPLETO de Python DESDE CERO para Principiantes 2025</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=_6N18g3ewnw" target="_blank" rel="noopener noreferrer">Aprende Python en 10 minutos</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=tQZy0U8s9LY" target="_blank" rel="noopener noreferrer">Aprende Python ahora! curso completo e intensivo desde cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=WatTqrq8kQQ" target="_blank" rel="noopener noreferrer">Curso Python desde 0</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=QPAO-31QtQ8" target="_blank" rel="noopener noreferrer">Curso de Python 2025 para Principiantes (Completo Desde CERO)</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=WWiic_r7O3Y" target="_blank" rel="noopener noreferrer">PYTHON desde cero: ¡La Mejor Forma de Aprender RÁPIDO!</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=NG7XjqN7TFU" target="_blank" rel="noopener noreferrer">Curso de PYTHON desde CERO para AUTODIDACTAS</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=DLikpfc64cA" target="_blank" rel="noopener noreferrer">Tutorial de Python en Español desde Cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=Kp4Mvapo5kc" target="_blank" rel="noopener noreferrer">Curso de Python desde Cero - Píldoras Informáticas</a></li>
+</ol>
+
+        <section id="HTML5" class="seccion">
+            <h3>HTML5</h3>
+            <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
+            <button onclick="enviarMensaje(this)">Enviar</button>
+            <button onclick="borrarMensajes(this)">🗑️ Borrar mensajes</button>
+            <div class="chat-container"></div>
+        </section>
+
+<ol class="ordered-list">
+  <li><a href="https://www.youtube.com/watch?v=Kd5GiBcjSfY" target="_blank" rel="noopener noreferrer">Curso de HTML5 desde CERO para principiantes [COMPLETO]</a></li>
+  <br>
+  <li><a href="https://m.youtube.com/watch?t=1052s&v=54Ky7OZ9Jmc" target="_blank" rel="noopener noreferrer">Curso HTML5 desde CERO [Curso COMPLETO]</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=Y-OhzQpsRwI" target="_blank" rel="noopener noreferrer">Curso Básico de HTML5 y CSS3 Desde Cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=MJkdaVFHrto" target="_blank" rel="noopener noreferrer">Aprende HTML ahora! curso completo GRATIS desde cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=bPR_JEoom4c" target="_blank" rel="noopener noreferrer">HTML5 desde cero: Guía para principiantes</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/playlist?list=PLPl81lqbj-4KaMYQ9nrh-NjTIcgmbL1V2" target="_blank" rel="noopener noreferrer">Curso completo de HTML5 y CSS3 Páginas web DESDE CERO (Lista de reproducción)</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=E0ffIrkHLh0" target="_blank" rel="noopener noreferrer">Curso Completo de HTML5 y CSS3 para Principiantes (2021)</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=WPYFbodxwC0" target="_blank" rel="noopener noreferrer">HTML5 desde cero: configurando VSCode</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=mCOUwThJMkw" target="_blank" rel="noopener noreferrer">Curso HTML5 completo, 2023</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/playlist?list=PLU8oAlHdN5BnX63lyAeV0LzLnpGudgRrK" target="_blank" rel="noopener noreferrer">Curso HTML 5 (Lista de reproducción)</a></li>
+</ol>
+
+
+        <section id="CSS3" class="seccion">
+            <h3>CSS3</h3>
+            <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
+            <button onclick="enviarMensaje(this)">Enviar</button>
+            <button onclick="borrarMensajes(this)">🗑️ Borrar mensajes</button>
+            <div class="chat-container"></div>
+        </section>
+
+<ol class="ordered-list">
+  <li><a href="https://www.youtube.com/watch?v=OWKXEJN67FE" target="_blank" rel="noopener noreferrer">Curso de CSS desde CERO (Completo)</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=WfDqFArJnYA" target="_blank" rel="noopener noreferrer">APRENDE CSS desde CERO (tutorial completo)</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=Y-OhzQpsRwI" target="_blank" rel="noopener noreferrer">Curso Básico de HTML5 y CSS3 Desde Cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=wZniZEbPAzk" target="_blank" rel="noopener noreferrer">Aprende CSS ahora! curso completo GRATIS desde cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=TlJbu0BMLaY" target="_blank" rel="noopener noreferrer">CURSO DE CSS COMPLETO: De Principiante a Front-End 2024</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=rr2H086z16s" target="_blank" rel="noopener noreferrer">HTML y CSS curso práctico Desde cero [Tutorial Español]</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=G3e-cpL7ofc" target="_blank" rel="noopener noreferrer">HTML & CSS Full Course - Beginner to Pro</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/playlist?list=PLPl81lqbj-4LKo66cEts5yC_AjOvqKptm" target="_blank" rel="noopener noreferrer">HTML y CSS Curso Completo Español [DESDE CERO] (Lista de reproducción)</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=rTtC6Q-71qg" target="_blank" rel="noopener noreferrer">CSS from Scratch | Complete Free Tutorial by Sergie Code</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=hrxjBqZWsb0" target="_blank" rel="noopener noreferrer">¡APRENDE CSS GRATIS! Curso de CSS desde cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=LzlarZAtMYI" target="_blank" rel="noopener noreferrer">Curso CSS PARA PRINCIPIANTES desde CERO (DOMINA CSS3)</a></li>
+</ol>
+
+
+        <section id="JAVASCRIPT" class="seccion">
+            <h3>JavaScript</h3>
+            <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
+            <button onclick="enviarMensaje(this)">Enviar</button>
+            <button onclick="borrarMensajes(this)">🗑️ Borrar mensajes</button>
+            <div class="chat-container"></div>
+        </section>
+
+<ol class="ordered-list">
+  <li><a href="https://www.youtube.com/watch?v=1glVfFxj8a4" target="_blank" rel="noopener noreferrer">Curso COMPLETO de JavaScript DESDE CERO para Principiantes</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=QoC4RxNIs5M" target="_blank" rel="noopener noreferrer">Aprende JavaScript Ahora! curso completo desde cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=ivdTnPl1ND0" target="_blank" rel="noopener noreferrer">Aprende JavaScript - Curso Completo desde Cero</a></li>
+  <br>
+  <li><a href="https://m.youtube.com/watch?t=940s&v=z95mZVUcJ-E" target="_blank" rel="noopener noreferrer">Curso de JAVASCRIPT desde CERO (Completo) - Nivel JUNIOR</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=Eh-s-n_6zNQ" target="_blank" rel="noopener noreferrer">Curso Completo de Javascript desde Cero</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=EdWuxZVBEMA" target="_blank" rel="noopener noreferrer">CURSO GRATIS JAVASCRIPT DESDE CERO (PRINCIPIANTES)</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=RqQ1d1qEWlE" target="_blank" rel="noopener noreferrer">Curso Javascript para Principiantes</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=0yzBXxRLadM" target="_blank" rel="noopener noreferrer">Curso JavaScript en Español Tutorial de JavaScript 2025</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/watch?v=v8Evfd6AFpw" target="_blank" rel="noopener noreferrer">Curso de JavaScript desde Cero - Aprende JavaScript</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/playlist?list=PLPl81lqbj-4I11QPam9ApoT7tGbmyBg9P" target="_blank" rel="noopener noreferrer">JAVASCRIPT Curso Español [Desde Cero] (Lista de reproducción)</a></li>
+  <br>
+  <li><a href="https://www.youtube.com/playlist?list=PLQxX2eiEaqbwnzKnmqHDl0rkRvp_T7Q_W" target="_blank" rel="noopener noreferrer">Curso JAVASCRIPT DESDE CERO 2025 (Lista de reproducción)</a></li>
+</ol>
+
+
+        <footer>
+            © 2025 Darío Aitor Ciucu Ivana. Todos los derechos reservados.<br>
+            Este código y todo su contenido es de mi propiedad absoluta y queda protegido por derechos de autor.<br>
+            No se permite su uso, copia, modificación, distribución ni comercialización sin mi consentimiento expreso y por escrito.
+        </footer>
+    </div>
+
+    <script>
+
+    let nombreUsuario = "";
+
+    function pedirNombreUsuario() {
+        let nombre = "";
+        while (!nombre) {
+            nombre = prompt("Por favor, ingresa tu nombre de usuario:");
+            if (nombre) {
+                nombreUsuario = nombre.trim();
+            }
+        }
+    }
+
+    // Guardar mensajes por sección
+    function guardarMensajes(seccionId, mensajes) {
+        localStorage.setItem('chat_' + seccionId, JSON.stringify(mensajes));
+    }
+
+    // Cargar mensajes por sección
+    function cargarMensajes(seccionId, chatContainer) {
+        const mensajes = JSON.parse(localStorage.getItem('chat_' + seccionId)) || [];
+        mensajes.forEach(msg => {
+            const divMensaje = document.createElement('div');
+            divMensaje.textContent = msg;
+            chatContainer.appendChild(divMensaje);
+        });
+    }
+    
+
+    function enviarMensaje(boton) {
+        const seccion = boton.parentElement;
+        const textarea = seccion.querySelector('.mensaje-input');
+        const chat = seccion.querySelector('.chat-container');
+        const seccionId = seccion.id;
+
+        const texto = textarea.value.trim();
+        if (texto !== '') {
+            const mensajeCompleto = nombreUsuario + ": " + texto;
+
+            const divMensaje = document.createElement('div');
+            divMensaje.textContent = mensajeCompleto;
+            chat.appendChild(divMensaje);
+
+            // Guardar en localStorage
+            const mensajesGuardados = JSON.parse(localStorage.getItem('chat_' + seccionId)) || [];
+            mensajesGuardados.push(mensajeCompleto);
+            guardarMensajes(seccionId, mensajesGuardados);
+
+            chat.scrollTop = chat.scrollHeight;
+            textarea.value = '';
+        }
+        function borrarMensajes(boton) {
+    const seccion = boton.parentElement;
+    const chat = seccion.querySelector('.chat-container');
+    const seccionId = seccion.id;
+
+    // Confirmación
+    if (confirm("¿Estás seguro de que quieres borrar todos los mensajes de esta sección?")) {
+        // Borrar del localStorage
+        localStorage.removeItem('chat_' + seccionId);
+
+        // Borrar visualmente
+        chat.innerHTML = '';
+    }
+}
+
+    }
+
+    // Elementos modales
+    const consentModal = document.getElementById('consent-modal');
+    const mainContent = document.getElementById('main-content');
+    const acceptBtn = document.getElementById('accept-btn');
+    const rejectBtn = document.getElementById('reject-btn');
+    const privacyModal = document.getElementById('privacy-modal');
+    const showPrivacyLink = document.getElementById('show-privacy-link');
+    const closePrivacyBtn = document.getElementById('close-privacy-btn');
+
+    showPrivacyLink.addEventListener('click', () => {
+        privacyModal.style.display = 'flex';
+    });
+
+    closePrivacyBtn.addEventListener('click', () => {
+        privacyModal.style.display = 'none';
+    });
+
+    // Si ya aceptó la política, mostrar contenido y cargar mensajes
+    if (localStorage.getItem('privacyAccepted') === 'true') {
+        consentModal.style.display = 'none';
+        mainContent.style.display = 'block';
+        pedirNombreUsuario();
+
+        // Cargar mensajes guardados por sección
+        document.querySelectorAll('.seccion').forEach(seccion => {
+            const chat = seccion.querySelector('.chat-container');
+            cargarMensajes(seccion.id, chat);
+        });
+    }
+
+    // Al aceptar, guardar consentimiento y cargar mensajes
+    acceptBtn.addEventListener('click', () => {
+        localStorage.setItem('privacyAccepted', 'true');
+        consentModal.style.display = 'none';
+        mainContent.style.display = 'block';
+        pedirNombreUsuario();
+
+        // Cargar mensajes guardados por sección
+        document.querySelectorAll('.seccion').forEach(seccion => {
+            const chat = seccion.querySelector('.chat-container');
+            cargarMensajes(seccion.id, chat);
+        });
+    });
+
+    rejectBtn.addEventListener('click', () => {
+        alert('Debes aceptar la política de privacidad y los términos y condiciones para usar este sitio.');
+    });
+    </script>
+</body>
+</html>
