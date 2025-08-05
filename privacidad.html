@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Coding Corner</title>
+<style>
+  body {
+    margin: 0; font-family: Arial, sans-serif; background: #111; color: #eee;
+  }
+  header {
+    background: #222; padding: 20px; text-align: center;
+  }
+  header h1 {
+    color: #f90;
+    margin: 0;
+  }
+  nav {
+    margin-top: 10px;
+  }
+  nav button {
+    margin: 0 10px; padding: 10px 20px; font-size: 1rem;
+    cursor: pointer; border: none; border-radius: 5px;
+    background-color: #444; color: #eee;
+  }
+  nav button:hover {
+    background-color: #f90; color: #111;
+  }
+  #consent-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); color: white; display: flex;
+    flex-direction: column; justify-content: center; align-items: center;
+    padding: 20px; box-sizing: border-box; z-index: 9999;
+    text-align: center;
+  }
+  #consent-modal p {
+    max-width: 600px; margin-bottom: 20px;
+  }
+  #consent-modal a {
+    color: #f90;
+    text-decoration: underline;
+  }
+  #consent-modal button {
+    margin: 0 10px; padding: 10px 20px; font-size: 1.1rem;
+    cursor: pointer; border: none; border-radius: 5px;
+  }
+  #accept-btn { background-color: #28a745; color: white; }
+  #reject-btn { background-color: #dc3545; color: white; }
+  #main-content {
+    display: none; padding: 40px; max-width: 900px; margin: auto;
+  }
+  footer {
+    background: #222; color: #eee; text-align: center; padding: 15px;
+    position: fixed; width: 100%; bottom: 0;
+  }
+  footer a {
+    color: #f90;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="consent-modal">
+  <p>Antes de continuar, debes aceptar nuestra <a href="privacidad.html" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>.</p>
+  <div>
+    <button id="accept-btn">Aceptar</button>
+    <button id="reject-btn">Rechazar</button>
+  </div>
+</div>
+
+<div id="main-content">
+  <header>
+    <h1>The Coding Corner</h1>
+    <nav>
+      <button>Iniciar sesión</button>
+      <button>Registrarse</button>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Bienvenido a la comunidad de programadores</h2>
+    <p>Aquí podrás compartir conocimientos, resolver dudas y aprender juntos.</p>
+  </section>
+</div>
+
+<footer>
+  <p>© 2025 Daci670. Todos los derechos reservados. | <a href="privacidad.html" target="_blank" rel="noopener noreferrer">Política de Privacidad</a></p>
+</footer>
+
+<script>
+  const consentModal = document.getElementById('consent-modal');
+  const mainContent = document.getElementById('main-content');
+  const acceptBtn = document.getElementById('accept-btn');
+  const rejectBtn = document.getElementById('reject-btn');
+
+  if(localStorage.getItem('privacyAccepted') === 'true') {
+    consentModal.style.display = 'none';
+    mainContent.style.display = 'block';
+  }
+
+  acceptBtn.addEventListener('click', () => {
+    localStorage.setItem('privacyAccepted', 'true');
+    consentModal.style.display = 'none';
+    mainContent.style.display = 'block';
+  });
+
+  rejectBtn.addEventListener('click', () => {
+    alert('Debes aceptar la política de privacidad para usar este sitio.');
+    // Aquí puedes redirigir fuera o mantener bloqueado el acceso
+    // window.location.href = 'https://www.google.com';
+  });
+</script>
+
+</body>
+</html>
