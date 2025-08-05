@@ -105,48 +105,113 @@
       font-size: 14px;
       white-space: pre-wrap;
     }
+
+    /* Modal de consentimiento */
+    #consent-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      color: #00ff00;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    #consent-modal p {
+      max-width: 600px;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+
+    #consent-modal a {
+      color: #00cc00;
+      text-decoration: underline;
+    }
+
+    #consent-modal button {
+      margin: 0 10px;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    #accept-btn {
+      background-color: #28a745;
+      color: #000000;
+    }
+
+    #reject-btn {
+      background-color: #dc3545;
+      color: #000000;
+    }
   </style>
 </head>
 <body>
-  <h1>Bienvenidos al foro de código libre</h1>
-  <p>(Nuestro lema es: codifica lo que quieras.)</p>
 
-  <ul>
-    <li><a href="#PYTHON">Python</a></li>
-    <li><a href="#HTML5">HTML5</a></li>
-    <li><a href="#CSS3">CSS3</a></li>
-    <li><a href="#JAVASCRIPT">JavaScript</a></li>
-  </ul>
+  <!-- Modal de consentimiento -->
+  <div id="consent-modal">
+    <p>Antes de continuar, debes aceptar nuestra <a href="privacidad.html" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>.</p>
+    <div>
+      <button id="accept-btn">Aceptar</button>
+      <button id="reject-btn">Rechazar</button>
+    </div>
+  </div>
 
-  <p><strong>Por favor, habla en el foro del lenguaje indicado.</strong></p>
+  <!-- Contenido principal oculto hasta aceptar -->
+  <div id="main-content" style="display:none;">
+    <h1>Bienvenidos al foro de código libre</h1>
+    <p>(Nuestro lema es: codifica lo que quieras.)</p>
 
-  <section id="PYTHON">
-    <h3>PYTHON</h3>
-    <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
-    <button onclick="enviarMensaje(this)">Enviar</button>
-    <div class="chat-container"></div>
-  </section>
+    <ul>
+      <li><a href="#PYTHON">Python</a></li>
+      <li><a href="#HTML5">HTML5</a></li>
+      <li><a href="#CSS3">CSS3</a></li>
+      <li><a href="#JAVASCRIPT">JavaScript</a></li>
+    </ul>
 
-  <section id="HTML5">
-    <h3>HTML5</h3>
-    <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
-    <button onclick="enviarMensaje(this)">Enviar</button>
-    <div class="chat-container"></div>
-  </section>
+    <p><strong>Por favor, habla en el foro del lenguaje indicado.</strong></p>
 
-  <section id="CSS3">
-    <h3>CSS3</h3>
-    <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
-    <button onclick="enviarMensaje(this)">Enviar</button>
-    <div class="chat-container"></div>
-  </section>
+    <section id="PYTHON">
+      <h3>PYTHON</h3>
+      <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
+      <button onclick="enviarMensaje(this)">Enviar</button>
+      <div class="chat-container"></div>
+    </section>
 
-  <section id="JAVASCRIPT">
-    <h3>JavaScript</h3>
-    <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
-    <button onclick="enviarMensaje(this)">Enviar</button>
-    <div class="chat-container"></div>
-  </section>
+    <section id="HTML5">
+      <h3>HTML5</h3>
+      <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
+      <button onclick="enviarMensaje(this)">Enviar</button>
+      <div class="chat-container"></div>
+    </section>
+
+    <section id="CSS3">
+      <h3>CSS3</h3>
+      <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
+      <button onclick="enviarMensaje(this)">Enviar</button>
+      <div class="chat-container"></div>
+    </section>
+
+    <section id="JAVASCRIPT">
+      <h3>JavaScript</h3>
+      <textarea class="mensaje-input" placeholder="Escribe tu mensaje aquí"></textarea>
+      <button onclick="enviarMensaje(this)">Enviar</button>
+      <div class="chat-container"></div>
+    </section>
+
+    <footer>
+      <p>© 2025 DACI670. Todos los derechos reservados. | <a href="privacidad.html" target="_blank" rel="noopener noreferrer">Política de Privacidad</a></p>
+    </footer>
+  </div>
 
   <script>
     // Pedimos el nombre del usuario al cargar la página
@@ -162,7 +227,30 @@
       }
     }
 
-    pedirNombreUsuario();
+    // Esperamos a que acepten la política antes de pedir el nombre
+    const consentModal = document.getElementById('consent-modal');
+    const mainContent = document.getElementById('main-content');
+    const acceptBtn = document.getElementById('accept-btn');
+    const rejectBtn = document.getElementById('reject-btn');
+
+    if (localStorage.getItem('privacyAccepted') === 'true') {
+      consentModal.style.display = 'none';
+      mainContent.style.display = 'block';
+      pedirNombreUsuario();
+    }
+
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('privacyAccepted', 'true');
+      consentModal.style.display = 'none';
+      mainContent.style.display = 'block';
+      pedirNombreUsuario();
+    });
+
+    rejectBtn.addEventListener('click', () => {
+      alert('Debes aceptar la política de privacidad para usar este sitio.');
+      // Opcional: puedes redirigir a otra página, por ejemplo:
+      // window.location.href = 'https://www.google.com';
+    });
 
     function enviarMensaje(boton) {
       const seccion = boton.parentElement;
@@ -181,18 +269,6 @@
       }
     }
   </script>
-<footer>
-
- © 2025 DACI670. Todos los derechos reservados.
-
-Este código es propiedad exclusiva del autor y queda protegido por derechos de autor.  
-No puede ser usado, copiado, modificado ni distribuido sin autorización expresa por escrito del titular de los derechos.
-  <p>| <a href="privacidad.html" target="_blank" rel="noopener noreferrer">Política de Privacidad</a></p>
-</footer>
-
 
 </body>
 </html>
-
-
-
