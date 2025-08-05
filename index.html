@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Foro de Programación</title>
+<style>
+  body {
+    margin: 0;
+    background-color: #000;
+    font-family: 'Consolas', monospace, monospace;
+    color: #0f0;
+  }
+  .container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  .post-box {
+    background-color: #002200;
+    border: 1px solid #0f0;
+    color: #0f0;
+    padding: 0.7rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  #new-post {
+    width: 100%;
+    background-color: #002200;
+    border: 1px solid #0f0;
+    color: #0f0;
+    padding: 0.7rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    resize: vertical;
+    min-height: 80px;
+  }
+  button {
+    background-color: #004400;
+    border: 1px solid #0f0;
+    color: #0f0;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+  }
+  button:hover {
+    background-color: #006600;
+  }
+
+  /* Modal privacidad */
+  #privacy-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right:0;
+    bottom:0;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  #privacy-content {
+    background: #001100;
+    border: 2px solid #0f0;
+    padding: 2rem;
+    max-width: 500px;
+    color: #0f0;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+  #privacy-content h2 {
+    margin-top: 0;
+    color: #0f0;
+  }
+  #privacy-buttons {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+  #privacy-buttons button {
+    margin: 0 1rem;
+    font-weight: bold;
+  }
+
+  /* Copyright footer */
+  footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #0a0;
+    border-top: 1px solid #0f0;
+    padding: 1rem 0 2rem 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="privacy-modal">
+  <div id="privacy-content">
+    <h2>Política de Privacidad</h2>
+    <p>
+      Al utilizar este foro, aceptas que todos los datos que proporciones pasan a ser propiedad exclusiva del propietario del sitio. 
+      Tus mensajes y datos pueden ser almacenados y usados conforme a esta política.
+    </p>
+    <p>
+      <strong>Si no aceptas esta política, no podrás usar este foro.</strong>
+    </p>
+    <div id="privacy-buttons">
+      <button id="accept-btn">Aceptar</button>
+      <button id="decline-btn">No Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="forum" style="display:none;">
+  <h1>Foro de Programación</h1>
+  
+  <textarea id="new-post" placeholder="Escribe aquí tu mensaje..."></textarea>
+  <br/>
+  <button id="post-btn">Publicar</button>
+  
+  <div id="posts">
+    <!-- Mensajes aparecerán aquí -->
+  </div>
+
+  <footer>
+    &copy; 2025 TuNombre. Código protegido: No se permite usar, copiar, modificar o distribuir sin consentimiento expreso.
+  </footer>
+</div>
+
+<script>
+  const privacyModal = document.getElementById('privacy-modal');
+  const forum = document.getElementById('forum');
+  const acceptBtn = document.getElementById('accept-btn');
+  const declineBtn = document.getElementById('decline-btn');
+  const postBtn = document.getElementById('post-btn');
+  const postsContainer = document.getElementById('posts');
+  const newPostInput = document.getElementById('new-post');
+
+  // Comprobar si ya aceptó la política (guardado local)
+  if(localStorage.getItem('privacyAccepted') === 'true') {
+    privacyModal.style.display = 'none';
+    forum.style.display = 'block';
+  }
+
+  acceptBtn.addEventListener('click', () => {
+    localStorage.setItem('privacyAccepted', 'true');
+    privacyModal.style.display = 'none';
+    forum.style.display = 'block';
+  });
+
+  declineBtn.addEventListener('click', () => {
+    alert('Para usar este foro debes aceptar la política de privacidad.');
+    // No cerrar modal, ni mostrar el foro
+  });
+
+  postBtn.addEventListener('click', () => {
+    const text = newPostInput.value.trim();
+    if(text.length === 0) {
+      alert('Por favor, escribe un mensaje antes de publicar.');
+      return;
+    }
+    const postDiv = document.createElement('div');
+    postDiv.classList.add('post-box');
+    postDiv.textContent = text;
+    postsContainer.appendChild(postDiv);
+    newPostInput.value = '';
+  });
+</script>
+
+</body>
+</html>
